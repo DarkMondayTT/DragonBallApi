@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Dragon Ball Character</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to right, #ff9900, #ff6600);
+        color: #333;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        color: #fff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        margin-bottom: 30px;
+    }
+
+    .input-area {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    label {
+        font-weight: bold;
+    }
+
+    input[type="number"] {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 80px;
+    }
+
+    button {
+        padding: 8px 15px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    #character-info {
+        margin-top: 20px;
+        background-color: rgba(255, 255, 255, 0.9);
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        width: 90%;
+        max-width: 400px;
+        text-align: center;
+    }
+
+    #character-info h2 {
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+
+    #character-info p {
+        margin: 5px 0;
+        color: #555;
+    }
+
+    #character-info strong {
+        color: #333;
+    }
+
+    #character-info img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 15px;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+     #character-info p[style="color: red;"] {
+        font-weight: bold;
+    }
+
+</style>
+</head>
+<body>
+
+<h1>Buscar Personaje de Dragon Ball</h1>
+
+<div class="input-area">
+  <label for="character-number">Número de Personaje:</label>
+  <input type="number" id="character-number" value="1" min="1">
+  <button id="get-character">Buscar</button>
+</div>
+
+
+<div id="character-info">
+  <p>El personaje aparecera aqui</p>
+</div>
+
+<script>
+  document.getElementById('get-character').addEventListener('click', () => {
+    const characterNumber = document.getElementById('character-number').value;
+    if (!characterNumber || characterNumber < 1) {
+        const characterInfoDiv = document.getElementById('character-info');
+        return;
+    }
+    const url = `https://dragonball-api.com/api/characters/${characterNumber}`;
+
+    fetch(url)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Personaje no encontrado con ese número.');
+        }
+        return response.json();
+      })
+      .then(data => {
+        const characterInfoDiv = document.getElementById('character-info');
+        characterInfoDiv.innerHTML = `
+          <h2>${data.name}</h2>
+          <p><strong>Raza:</strong> ${data.race}</p>
+          <p><strong>Ki:</strong> ${data.ki}</p>
+          ${data.image ? `<img src="${data.image}" alt="${data.name}">` : ''}
+        `;
+      })
+      .catch(error => {
+        const characterInfoDiv = document.getElementById('character-info');
+        characterInfoDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+      });
+  });
+</script>
+
+</body>
+</html>
